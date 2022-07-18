@@ -13,29 +13,28 @@ public class Port {
         });
     }
 
-    //converts indexes to int[][] type
-    public int[][] getIndexes() {
-        int[][] ints = new int[indexes.length][];
+    public int[][] getProcessedIndexes() {
+        int[][] resultArray = new int[indexes.length][];
         for (int i = 0; i < indexes.length; i++) {
-            ints[i] = getSequenceNumbers(indexes[i]);
+            resultArray[i] = getSequenceNumbers(indexes[i]);
         }
-        return ints;
+        return resultArray;
     }
 
     private int[] getSequenceNumbers(String index) {
         String[] strings = index.split(",");
-        List<Integer> list = new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
         for (String string : strings) {
             if (string.contains("-")) {
                 String[] numbersSeparatedByMinus = string.split("-");
                 int leftBorder = Integer.parseInt(numbersSeparatedByMinus[0]);
                 int rightBorder = Integer.parseInt(numbersSeparatedByMinus[1]);
                 for (int j = leftBorder; j <= rightBorder; j++) {
-                    list.add(j);
+                    result.add(j);
                 }
-            } else list.add(Integer.parseInt(string));
+            } else result.add(Integer.parseInt(string));
         }
-        return list.stream().mapToInt(i -> i).toArray();
+        return result.stream().mapToInt(i -> i).toArray();
     }
 
     private void combineMethod(List<int[]> input, int[] current, int k) {
@@ -49,12 +48,15 @@ public class Port {
         }
     }
 
-    //generates non-repeating sequences by indexes numbers
+    /**
+     * Generates non-repeating sequences by indexes numbers
+     * @return array of non-repeating sequences
+     */
     public int[][] getCombineSequences() {
-        List<int[]> input = Arrays.asList(getIndexes());
+        List<int[]> input = Arrays.asList(getProcessedIndexes());
         combineMethod(input, new int[input.size()], 0);
-        int[][] arr = new int[combineIndexes.size()][];
-        Arrays.setAll(arr, i -> combineIndexes.get(i));
-        return arr;
+        int[][] resultArray = new int[combineIndexes.size()][];
+        Arrays.setAll(resultArray, i -> combineIndexes.get(i));
+        return resultArray;
     }
 }
