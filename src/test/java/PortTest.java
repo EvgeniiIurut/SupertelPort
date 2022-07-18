@@ -20,7 +20,6 @@ public class PortTest {
         assertArrayEquals(expected, port.getProcessedIndexes());
     }
 
-
     @Test
     void should_return_non_repeating_sequences_array_by_indexes() {
         final int[][] expected = new int[][]{{1, 3, 5}, {1, 3, 6}, {1, 4, 5}, {1, 4, 6}, {2, 3, 5}, {2, 3, 6}, {2, 4, 5}, {2, 4, 6}};

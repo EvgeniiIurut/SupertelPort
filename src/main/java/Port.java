@@ -50,6 +50,7 @@ public class Port {
 
     /**
      * Generates non-repeating sequences by indexes numbers
+     *
      * @return array of non-repeating sequences
      */
     public int[][] getCombineSequences() {
