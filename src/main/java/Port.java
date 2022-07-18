@@ -8,11 +8,9 @@ public class Port {
 
     public Port(String[] indexes) {
         this.indexes = indexes;
-        for (String s : indexes) {
-            if (!s.matches("[0-9]+-[0-9]+|[0-9]+")) {
-                throw new IllegalArgumentException("Invalid indexes. Please write correct data");
-            }
-        }
+        Arrays.stream(indexes).filter(s -> !s.matches("[0-9]+-[0-9]+|[0-9]+")).forEach(s -> {
+            throw new IllegalArgumentException("Invalid indexes. Please write correct data");
+        });
     }
 
     //converts indexes to int[][] type
