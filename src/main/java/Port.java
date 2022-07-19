@@ -1,15 +1,22 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
+
+import static java.lang.Integer.parseInt;
+import static java.util.Arrays.stream;
+import static java.util.function.Predicate.not;
 
 public class Port {
     private String[] indexes;
     private List<int[]> combineIndexes = new ArrayList<>();
+    final Pattern indexPattern = Pattern.compile("\\d+-\\d+|\\d+");
 
     public Port(String[] indexes) {
         this.indexes = indexes;
-        Arrays.stream(indexes).filter(s -> !s.matches("[0-9]+-[0-9]+|[0-9]+")).forEach(s -> {
-            throw new IllegalArgumentException("Invalid indexes. Please write correct data");
+        stream(indexes).filter(not(indexPattern.asMatchPredicate())).findFirst().ifPresent(incorrectIndex -> {
+            throw new IllegalArgumentException("Invalid indexes. Please write correct data. Wrong element: " + incorrectIndex);
         });
     }
 
@@ -21,20 +28,18 @@ public class Port {
         return resultArray;
     }
 
-    private int[] getSequenceNumbers(String index) {
-        String[] strings = index.split(",");
-        List<Integer> result = new ArrayList<>();
-        for (String string : strings) {
-            if (string.contains("-")) {
-                String[] numbersSeparatedByMinus = string.split("-");
-                int leftBorder = Integer.parseInt(numbersSeparatedByMinus[0]);
-                int rightBorder = Integer.parseInt(numbersSeparatedByMinus[1]);
-                for (int j = leftBorder; j <= rightBorder; j++) {
-                    result.add(j);
-                }
-            } else result.add(Integer.parseInt(string));
-        }
-        return result.stream().mapToInt(i -> i).toArray();
+    private int[] getSequenceNumbers(String indexes) {
+        return stream(indexes.split(",")).map(index -> {
+            final boolean indexIsRange = index.contains("-");
+            if (indexIsRange) {
+                final String[] range = index.split("-");
+                final int leftBoundInclusive = parseInt(range[0]);
+                final int rightBoundExclusive = parseInt(range[1]) + 1;
+                return IntStream.range(leftBoundInclusive, rightBoundExclusive).toArray();
+            } else {
+                return new int[]{parseInt(index)};
+            }
+        }).flatMapToInt(Arrays::stream).toArray();
     }
 
     private void combineMethod(List<int[]> input, int[] current, int k) {

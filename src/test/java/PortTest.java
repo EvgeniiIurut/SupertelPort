@@ -8,10 +8,10 @@ public class PortTest {
 
     @Test
     void should_throw_exception_for_invalid_input_indexes_data() {
-        final String[] wrongStrings = new String[]{"1- 2", "3-4", "5-6wrong"};
+        final String[] wrongStrings = new String[]{"1-wrong2", "3-4", "5-6"};
         var exception = assertThrows(IllegalArgumentException.class,
                 () -> new Port(wrongStrings));
-        assertEquals(exception.getMessage(), "Invalid indexes. Please write correct data");
+        assertEquals(exception.getMessage(), "Invalid indexes. Please write correct data. Wrong element: 1-wrong2");
     }
 
     @Test
